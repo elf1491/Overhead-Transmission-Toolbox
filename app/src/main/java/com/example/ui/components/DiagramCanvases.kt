@@ -200,7 +200,7 @@ fun BlowoutArcCanvas(
 
             // Conductor circle
             drawCircle(
-                color = ElectricAmber,
+                color = EpriAmber,
                 radius = 8f,
                 center = Offset(conductorX, conductorY)
             )
@@ -232,7 +232,7 @@ fun BlowoutArcCanvas(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text("Wind Load: ${String.format("%.2f", windForce)} lb/ft", style = MaterialTheme.typography.labelSmall, color = HighVoltageCyan)
-            Text("Blowout: ${String.format("%.1f", blowoutAngleDeg)}°", style = MaterialTheme.typography.labelSmall, color = ElectricAmber)
+            Text("Blowout: ${String.format("%.1f", blowoutAngleDeg)}°", style = MaterialTheme.typography.labelSmall, color = EpriAmber)
             Text("Displacement: ${String.format("%.1f", displacementFt)} ft", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface)
         }
     }
@@ -333,7 +333,7 @@ fun GroundingTowerCanvas(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Rods: $rodsCount driven", style = MaterialTheme.typography.labelSmall, color = ElectricAmber)
+            Text("Rods: $rodsCount driven", style = MaterialTheme.typography.labelSmall, color = EpriAmber)
             Text("60Hz R: ${String.format("%.1f", lowFreqOhms)} Ω", style = MaterialTheme.typography.labelSmall, color = if (lowFreqOhms <= 10.0) SafetyGreen else SafetyYellow)
             Text("Impulse Ri: ${String.format("%.1f", impulseOhms)} Ω", style = MaterialTheme.typography.labelSmall, color = HighVoltageCyan)
         }

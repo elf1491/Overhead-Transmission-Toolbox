@@ -443,12 +443,12 @@ fun HomeScreen(
                             subtitle = currentCategory.subtitle,
                             icon = currentCategory.icon,
                             colorAccent = when (currentCategory.id) {
-                                "line_design" -> ElectricAmber
-                                "corrosion" -> HighVoltageCyan
-                                "inspection" -> SafetyYellow
-                                "lightning" -> ElectricAmberLight
-                                "conductor" -> HighVoltageCyanLight
-                                else -> SafetyGreen
+                                "line_design" -> EpriBlue
+                                "corrosion" -> EpriTeal
+                                "inspection" -> EpriAmber
+                                "lightning" -> EpriBlueLight
+                                "conductor" -> EpriTealLight
+                                else -> EpriAmberLight
                             },
                             onGlossaryClick = { onOpenGlossary(currentCategory.title) }
                         )
@@ -482,9 +482,9 @@ fun HomeScreen(
                             description = tool.description,
                             icon = tool.icon,
                             colorAccent = when (tool.tag) {
-                                "CALCULATOR" -> ElectricAmber
-                                "SIMULATION" -> HighVoltageCyan
-                                else -> SafetyGreen
+                                "CALCULATOR" -> EpriBlue
+                                "SIMULATION" -> EpriTeal
+                                else -> EpriAmber
                             },
                             onClick = { onLaunchTool(tool.screenCategory, tool.id) }
                         )

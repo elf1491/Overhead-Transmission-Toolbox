@@ -13,55 +13,55 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme =
   darkColorScheme(
-    primary = ElectricAmber,
-    onPrimary = Color.Black,
-    primaryContainer = ElectricAmberDark,
+    primary = EpriBlue,
+    onPrimary = Color.White,
+    primaryContainer = EpriBlueDark,
     onPrimaryContainer = Color.White,
-    secondary = HighVoltageCyan,
+    secondary = EpriTeal,
     onSecondary = Color.Black,
-    secondaryContainer = HighVoltageCyanDark,
+    secondaryContainer = Color(0xFF004D48),
     onSecondaryContainer = Color.White,
-    tertiary = SafetyYellow,
+    tertiary = EpriAmber,
     onTertiary = Color.Black,
-    background = GridBackgroundDark,
-    onBackground = Color(0xFFE2E8F0),
-    surface = SteelDark,
+    background = EpriDarkBg,
+    onBackground = Color(0xFFF1F5F9),
+    surface = EpriSurface,
     onSurface = Color(0xFFF1F5F9),
-    surfaceVariant = SteelSurface,
+    surfaceVariant = EpriSurfaceVariant,
     onSurfaceVariant = Color(0xFFCBD5E1),
-    outline = SteelOutline,
-    outlineVariant = Color(0xFF2E4057),
+    outline = EpriOutline,
+    outlineVariant = EpriOutlineVariant,
     error = SafetyRed,
     onError = Color.White
   )
 
 private val LightColorScheme =
   lightColorScheme(
-    primary = ElectricAmberDark,
+    primary = EpriBlueDark,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFFFECE0),
-    onPrimaryContainer = ElectricAmberDark,
-    secondary = HighVoltageCyanDark,
+    primaryContainer = Color(0xFFD0EDFB),
+    onPrimaryContainer = EpriBlueDark,
+    secondary = EpriTeal,
     onSecondary = Color.White,
-    secondaryContainer = Color(0xFFE0F7F6),
-    onSecondaryContainer = Color(0xFF004D40),
-    tertiary = Color(0xFF855A00),
+    secondaryContainer = Color(0xFFD5F7F4),
+    onSecondaryContainer = Color(0xFF004D48),
+    tertiary = EpriAmber,
     background = GridBackgroundLight,
-    onBackground = Color(0xFF1E293B),
+    onBackground = Color(0xFF0A192F),
     surface = SlateLightSurface,
-    onSurface = Color(0xFF0F172A),
+    onSurface = Color(0xFF0A192F),
     surfaceVariant = SlateLightSurfaceVariant,
-    onSurfaceVariant = Color(0xFF475569),
-    outline = Color(0xFF94A3B8),
-    outlineVariant = Color(0xFFCBD5E1),
+    onSurfaceVariant = Color(0xFF334E68),
+    outline = Color(0xFF627D98),
+    outlineVariant = Color(0xFFBCCCDC),
     error = SafetyRed,
     onError = Color.White
   )
 
 @Composable
 fun MyApplicationTheme(
-  darkTheme: Boolean = isSystemInDarkTheme(),
-  dynamicColor: Boolean = false, // Keep branded engineering styling consistent
+  darkTheme: Boolean = true, // Default to EPRI dark mode (easy on the eyes)
+  dynamicColor: Boolean = false,
   content: @Composable () -> Unit,
 ) {
   val colorScheme =

@@ -383,7 +383,7 @@ function drawCatenaryCanvas(span, sag, clearance) {
   const midX = (tL + tR) / 2;
   const midY = attachY + sagPx;
 
-  ctx.strokeStyle = "#ff7a00";
+  ctx.strokeStyle = "#009cde";
   ctx.lineWidth = 3;
   ctx.beginPath();
   for (let i = 0; i <= 30; i++) {
@@ -397,10 +397,10 @@ function drawCatenaryCanvas(span, sag, clearance) {
   ctx.stroke();
 
   // Labels
-  ctx.fillStyle = "#00adb5";
+  ctx.fillStyle = "#38bdf8";
   ctx.font = "11px monospace";
   ctx.fillText(`Sag: ${sag.toFixed(1)} ft`, midX - 35, midY - 6);
-  ctx.fillStyle = "#06d6a0";
+  ctx.fillStyle = "#10b981";
   ctx.fillText(`Clearance: ${clearance.toFixed(1)} ft`, midX - 45, groundY - 6);
 }
 
