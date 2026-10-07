@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTT - Overhead Transmission Toolbox</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <span class="badge-logo">OTT</span>
+      <div class="brand-text">
+        <h1>Overhead Transmission Toolbox</h1>
+        <p>High-Voltage Engineering Suite</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="unit-toggle-btn" id="unitToggleBtn">Units: US</button>
+    </div>
+  </header>
+
+  <!-- Category Tabs -->
+  <nav class="category-nav">
+    <button class="nav-tab active" data-category="line_design">Line Design</button>
+    <button class="nav-tab" data-category="corrosion">Corrosion</button>
+    <button class="nav-tab" data-category="inspection">Inspection & Assessment</button>
+    <button class="nav-tab" data-category="lightning">Lightning & Grounding</button>
+    <button class="nav-tab" data-category="conductor">Conductor & Hardware</button>
+    <button class="nav-tab" data-category="row_env">Right-of-Way & Env</button>
+    <button class="nav-tab" data-category="glossary">Glossary</button>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main>
+    <div class="search-container">
+      <input type="text" id="globalSearchInput" class="search-input" placeholder="Search all calculators, simulations, and standards (e.g., Catenary, IEEE 738, ASCE 10, Drake)...">
+    </div>
+
+    <div id="contentArea"></div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
