@@ -1,0 +1,6 @@
+{
+  "name": "OTT",
+  "description": "Overhead Transmission Toolbox: Engineering calculators, simulations, defect assessment, and standards reference for line design, corrosion, grounding, and conductor hardware.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
