@@ -9,12 +9,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.model.GlossaryRepository
 import com.example.ui.components.GlossaryCard
+import com.example.ui.theme.EpriTeal
 
 @Composable
 fun GlossaryScreen(
     onNavigateBack: () -> Unit,
+    onOpenFlashcards: (String?) -> Unit = {},
+    onOpenChat: () -> Unit = {},
     initialCategory: String? = null,
     modifier: Modifier = Modifier
 ) {
@@ -63,7 +67,24 @@ fun GlossaryScreen(
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
             )
-            Spacer(modifier = Modifier.width(48.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                IconButton(onClick = onOpenChat) {
+                    Icon(Icons.Default.Psychology, contentDescription = "Ask Assistant", tint = EpriTeal)
+                }
+                FilledTonalButton(
+                    onClick = { onOpenFlashcards(selectedCategory) },
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                ) {
+                    Icon(
+                        Icons.Default.FlipCameraAndroid,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Flashcards", fontSize = 12.sp)
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(10.dp))

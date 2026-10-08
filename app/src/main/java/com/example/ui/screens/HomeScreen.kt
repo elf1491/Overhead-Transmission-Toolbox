@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -72,6 +73,30 @@ val APP_CATEGORIES = listOf(
                 tag = "CALCULATOR",
                 description = "Steady-state current rating based on convective, radiative, and solar heat balance.",
                 icon = Icons.Default.Bolt,
+                screenCategory = "line_design"
+            ),
+            ToolDefinition(
+                id = "emissivity",
+                title = "Emissivity & Solar Absorptivity",
+                tag = "CALCULATOR",
+                description = "Quantifies surface radiation ε and solar α weathering per IEEE 738 Clause 6, evaluating ampacity impact.",
+                icon = Icons.Default.WbSunny,
+                screenCategory = "line_design"
+            ),
+            ToolDefinition(
+                id = "nesc_clearance",
+                title = "NESC 232 Ground Clearance",
+                tag = "CALCULATOR",
+                description = "Mandatory regulatory vertical clearances above roads, rails, and waterways per NESC Table 232-1.",
+                icon = Icons.Default.Straighten,
+                screenCategory = "line_design"
+            ),
+            ToolDefinition(
+                id = "ferc_aar",
+                title = "FERC 881 Ambient-Adjusted Rating",
+                tag = "CALCULATOR",
+                description = "Hourly dynamic transmission ratings based on ambient temperatures and day/night solar heating per FERC Order 881.",
+                icon = Icons.Default.TrendingUp,
                 screenCategory = "line_design"
             )
         )
@@ -144,6 +169,14 @@ val APP_CATEGORIES = listOf(
                 tag = "CALCULATOR",
                 description = "ASCE 10 column slenderness ratio KL/r and allowable compressive axial capacity in kips.",
                 icon = Icons.Default.Architecture,
+                screenCategory = "inspection"
+            ),
+            ToolDefinition(
+                id = "osha_mad",
+                title = "OSHA Minimum Approach Distance (MAD)",
+                tag = "CALCULATOR",
+                description = "Live-line worker MAD clearances per OSHA 1910.269 & IEEE 516 with elevation altitude adjustment.",
+                icon = Icons.Default.Security,
                 screenCategory = "inspection"
             )
         )
@@ -249,6 +282,22 @@ val APP_CATEGORIES = listOf(
                 description = "EPRI wet-conductor rain noise (dBA) and active corona loss (kW/km) under bundle conductor.",
                 icon = Icons.Default.VolumeUp,
                 screenCategory = "row_env"
+            ),
+            ToolDefinition(
+                id = "nerc_mvcd",
+                title = "NERC FAC-003-4 MVCD Clearance",
+                tag = "CALCULATOR",
+                description = "Mandatory federal minimum vegetation clearance distances preventing tree flashovers under Gallet equation.",
+                icon = Icons.Default.Park,
+                screenCategory = "row_env"
+            ),
+            ToolDefinition(
+                id = "faa_obstruction",
+                title = "FAA Tower Marking & Lighting",
+                tag = "CALCULATOR",
+                description = "Evaluates FAA Part 77 airspace hazard slope, orange/white paint banding, and 36\" catenary marker balls.",
+                icon = Icons.Default.FlightTakeoff,
+                screenCategory = "row_env"
             )
         )
     )
@@ -261,6 +310,8 @@ fun HomeScreen(
     onCategorySelected: (Int) -> Unit,
     onLaunchTool: (category: String, toolId: String) -> Unit,
     onOpenGlossary: (categoryName: String?) -> Unit,
+    onOpenFlashcards: (categoryName: String?) -> Unit = {},
+    onOpenChat: () -> Unit = {},
     unitSystem: UnitSystem,
     onToggleUnitSystem: () -> Unit,
     modifier: Modifier = Modifier
@@ -309,9 +360,25 @@ fun HomeScreen(
                         onClick = onToggleUnitSystem,
                         label = { Text(if (unitSystem == UnitSystem.IMPERIAL) "US" else "SI") },
                         modifier = Modifier
-                            .padding(end = 8.dp)
+                            .padding(end = 4.dp)
                             .testTag("unit_toggle_btn")
                     )
+
+                    // AI Assistant Action
+                    IconButton(
+                        onClick = onOpenChat,
+                        modifier = Modifier.testTag("top_bar_chat_btn")
+                    ) {
+                        Icon(Icons.Default.Psychology, contentDescription = "AI Assistant", tint = EpriTeal)
+                    }
+
+                    // Flashcard / Quiz Action
+                    IconButton(
+                        onClick = { onOpenFlashcards(null) },
+                        modifier = Modifier.testTag("top_bar_flashcards_btn")
+                    ) {
+                        Icon(Icons.Default.School, contentDescription = "Flashcards & Quiz")
+                    }
 
                     // Glossary Action
                     IconButton(
@@ -324,6 +391,16 @@ fun HomeScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onOpenChat,
+                icon = { Icon(Icons.Default.Psychology, contentDescription = null) },
+                text = { Text("Ask Assistant") },
+                containerColor = EpriTeal,
+                contentColor = Color.White,
+                modifier = Modifier.testTag("home_fab_chat_btn")
             )
         },
         modifier = modifier
@@ -505,8 +582,15 @@ fun HomeScreen(
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold
                                     )
-                                    TextButton(onClick = { onOpenGlossary(currentCategory.title) }) {
-                                        Text("View All (${categoryTerms.size})")
+                                    Row {
+                                        TextButton(onClick = { onOpenFlashcards(currentCategory.title) }) {
+                                            Icon(Icons.Default.School, contentDescription = null, modifier = Modifier.size(16.dp))
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text("Quiz")
+                                        }
+                                        TextButton(onClick = { onOpenGlossary(currentCategory.title) }) {
+                                            Text("View All (${categoryTerms.size})")
+                                        }
                                     }
                                 }
 

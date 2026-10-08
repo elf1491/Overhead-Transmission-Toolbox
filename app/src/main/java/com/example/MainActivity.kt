@@ -22,6 +22,8 @@ sealed class AppDestination {
     data class Conductor(val toolId: String = "conductor_db") : AppDestination()
     data class RowEnv(val toolId: String = "emf_profile") : AppDestination()
     data class Glossary(val categoryFilter: String? = null) : AppDestination()
+    data class Flashcards(val categoryFilter: String? = null) : AppDestination()
+    object Chat : AppDestination()
 }
 
 class MainActivity : ComponentActivity() {
@@ -62,6 +64,12 @@ fun OttApp() {
                 },
                 onOpenGlossary = { categoryFilter ->
                     currentScreen = AppDestination.Glossary(categoryFilter)
+                },
+                onOpenFlashcards = { categoryFilter ->
+                    currentScreen = AppDestination.Flashcards(categoryFilter)
+                },
+                onOpenChat = {
+                    currentScreen = AppDestination.Chat
                 },
                 unitSystem = unitSystem,
                 onToggleUnitSystem = { unitSystem = unitSystem.toggle() }
@@ -120,7 +128,45 @@ fun OttApp() {
             BackHandler { currentScreen = AppDestination.Home }
             GlossaryScreen(
                 initialCategory = screen.categoryFilter,
-                onNavigateBack = { currentScreen = AppDestination.Home }
+                onNavigateBack = { currentScreen = AppDestination.Home },
+                onOpenFlashcards = { categoryFilter ->
+                    currentScreen = AppDestination.Flashcards(categoryFilter)
+                },
+                onOpenChat = {
+                    currentScreen = AppDestination.Chat
+                }
+            )
+        }
+
+        is AppDestination.Flashcards -> {
+            BackHandler { currentScreen = AppDestination.Home }
+            FlashcardStudyScreen(
+                initialCategory = screen.categoryFilter,
+                onNavigateBack = { currentScreen = AppDestination.Home },
+                onOpenChat = {
+                    currentScreen = AppDestination.Chat
+                }
+            )
+        }
+
+        is AppDestination.Chat -> {
+            BackHandler { currentScreen = AppDestination.Home }
+            TransmissionChatScreen(
+                onNavigateBack = { currentScreen = AppDestination.Home },
+                onNavigateToTool = { category, toolId ->
+                    currentScreen = when (category) {
+                        "line_design" -> AppDestination.LineDesign(toolId)
+                        "corrosion" -> AppDestination.Corrosion(toolId)
+                        "inspection" -> AppDestination.Inspection(toolId)
+                        "lightning" -> AppDestination.Lightning(toolId)
+                        "conductor" -> AppDestination.Conductor(toolId)
+                        "row_env" -> AppDestination.RowEnv(toolId)
+                        else -> AppDestination.Home
+                    }
+                },
+                onNavigateToGlossary = { categoryFilter ->
+                    currentScreen = AppDestination.Glossary(categoryFilter)
+                }
             )
         }
     }

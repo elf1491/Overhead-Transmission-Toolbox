@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.model.*
 import com.example.ui.components.*
+import kotlin.math.*
 
 @Composable
 fun InspectionScreen(
@@ -49,6 +50,7 @@ fun InspectionScreen(
                 "defect_matrix" -> 0
                 "wood_pole" -> 1
                 "lattice_buckling" -> 2
+                "osha_mad" -> 3
                 else -> 0
             },
             edgePadding = 0.dp
@@ -71,6 +73,12 @@ fun InspectionScreen(
                 text = { Text("Lattice Member Buckling") },
                 icon = { Icon(Icons.Default.Architecture, contentDescription = null, modifier = Modifier.size(18.dp)) }
             )
+            Tab(
+                selected = selectedTool == "osha_mad",
+                onClick = { selectedTool = "osha_mad" },
+                text = { Text("OSHA MAD Live-Line") },
+                icon = { Icon(Icons.Default.Security, contentDescription = null, modifier = Modifier.size(18.dp)) }
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -79,6 +87,7 @@ fun InspectionScreen(
             "defect_matrix" -> DefectMatrixCalculator()
             "wood_pole" -> WoodPoleStrengthCalculator()
             "lattice_buckling" -> LatticeBucklingCalculator()
+            "osha_mad" -> OshaMadCalculator()
         }
     }
 }
@@ -430,4 +439,110 @@ fun LatticeBucklingCalculator() {
         isPassed = result.asce10LimitPassed,
         standardRef = "P_all = F_cr · Area"
     )
+}
+
+@Composable
+fun OshaMadCalculator() {
+    var voltageStr by remember { mutableStateOf("230") } // kV
+    var altStr by remember { mutableStateOf("1000") } // ft
+    var customTStr by remember { mutableStateOf("") } // optional custom T
+
+    val v = voltageStr.toDoubleOrNull() ?: 230.0
+    val alt = altStr.toDoubleOrNull() ?: 1000.0
+    val customT = customTStr.toDoubleOrNull()
+
+    val result = remember(v, alt, customT) {
+        RegulatoryClearanceEngine.calculateOshaMad(
+            phaseToPhaseVoltageKv = v,
+            transientOvervoltageT = customT,
+            altitudeFt = alt
+        )
+    }
+
+    Text(
+        text = "OSHA 1910.269 Minimum Approach Distance (MAD)",
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary
+    )
+    Text(
+        text = "Calculates mandatory live-line worker and tool approach clearances per OSHA 29 CFR 1910.269(l)(3) & IEEE Std 516-2021.",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+
+    Spacer(modifier = Modifier.height(14.dp))
+
+    EngineeringInputField(
+        label = "Nominal System Voltage (Phase-to-Phase)",
+        value = voltageStr,
+        onValueChange = { voltageStr = it },
+        unit = "kV",
+        presetOptions = listOf("69 kV" to "69", "115 kV" to "115", "138 kV" to "138", "230 kV" to "230", "345 kV" to "345", "500 kV" to "500")
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    EngineeringInputField(
+        label = "Worksite Elevation Above Sea Level",
+        value = altStr,
+        onValueChange = { altStr = it },
+        unit = "ft",
+        presetOptions = listOf("Sea Level (0 ft)" to "0", "3,000 ft" to "3000", "5,000 ft (Mile High)" to "5000", "8,000 ft (Mountain Pass)" to "8000")
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    EngineeringInputField(
+        label = "Per-Unit Transient Overvoltage (T)",
+        value = customTStr,
+        onValueChange = { customTStr = it },
+        unit = "pu",
+        presetOptions = listOf("Default (${String.format("%.1f", result.perUnitTransientT)} pu)" to "", "2.0 pu" to "2.0", "2.4 pu" to "2.4", "3.0 pu" to "3.0")
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    MetricResultBox(
+        label = "Phase-to-Ground Minimum Approach Distance",
+        value = String.format("%.2f", result.phaseToGroundMadFt),
+        unit = "ft (${String.format("%.2f", result.phaseToGroundMadMeters)} m)",
+        statusText = "Live-line tool & lineworker safety buffer. Transient T = ${String.format("%.2f", result.perUnitTransientT)} pu | Alt Factor A = ${String.format("%.2f", result.altitudeCorrectionFactorA)}",
+        isPassed = true,
+        standardRef = "OSHA 1910.269 App B Table R-6"
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    MetricResultBox(
+        label = "Phase-to-Phase Minimum Approach Distance",
+        value = String.format("%.2f", result.phaseToPhaseMadFt),
+        unit = "ft (${String.format("%.2f", result.phaseToPhaseMadMeters)} m)",
+        statusText = "Between conductors of different phases during energized maneuvering.",
+        isPassed = true,
+        standardRef = "IEEE Std 516-2021"
+    )
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                text = "Regulatory Crew Safety Requirements:",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "• Qualified lineworkers must maintain MAD at all times unless insulated with rated live-line sticks (ASTM F711) or performing bare-hand work from an equipotential aerial platform.\n" +
+                        "• At altitudes above 2,950 ft (900 m), thinner air reduces dielectric breakdown strength, requiring the altitude correction multiplier shown above.\n" +
+                        "• Ensure automated reclosing is disabled (Hot Line Order / Hold Off) prior to energized work.",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
 }
