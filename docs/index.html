@@ -19,6 +19,7 @@
     </div>
     <div class="header-actions">
       <button class="unit-toggle-btn" id="unitToggleBtn">Units: US</button>
+      <button class="unit-toggle-btn chat-header-trigger" onclick="toggleChatModal()">💬 Assistant</button>
     </div>
   </header>
 
@@ -31,6 +32,7 @@
     <button class="nav-tab" data-category="conductor">Conductor & Hardware</button>
     <button class="nav-tab" data-category="row_env">Right-of-Way & Env</button>
     <button class="nav-tab" data-category="glossary">Glossary</button>
+    <button class="nav-tab" data-category="study">Study & Quiz</button>
   </nav>
 
   <!-- Main Content Area -->
@@ -41,6 +43,44 @@
 
     <div id="contentArea"></div>
   </main>
+
+  <!-- Floating Chatbot Action Button -->
+  <button class="chat-fab-btn" onclick="toggleChatModal()" title="Ask Transmission Engineering Assistant">
+    <span class="fab-icon">🤖</span>
+    <span>Ask Assistant</span>
+  </button>
+
+  <!-- Chatbot Modal -->
+  <div class="chat-modal-overlay" id="chatModal" onclick="if(event.target === this) toggleChatModal()">
+    <div class="chat-modal-window">
+      <div class="chat-modal-header">
+        <div class="chat-header-title">
+          <span style="font-size: 1.4rem;">⚡</span>
+          <div>
+            <h3>Transmission Assistant</h3>
+            <span>Standards, formulas & calculator guide</span>
+          </div>
+        </div>
+        <button class="chat-close-btn" onclick="toggleChatModal()">✕</button>
+      </div>
+
+      <div class="chat-quick-chips">
+        <button class="quick-chip" onclick="askQuickQuestion('How does conductor surface emissivity affect ampacity?')">Emissivity & Rating</button>
+        <button class="quick-chip" onclick="askQuickQuestion('What is the minimum ground clearance for a 138 kV line over roads?')">NESC 232 Road</button>
+        <button class="quick-chip" onclick="askQuickQuestion('How is live-line Minimum Approach Distance calculated?')">OSHA MAD</button>
+        <button class="quick-chip" onclick="askQuickQuestion('What is the formula for conductor catenary sag?')">Catenary Sag</button>
+        <button class="quick-chip" onclick="askQuickQuestion('How long does zinc galvanizing last in industrial C4 environments?')">Zinc Coating Life</button>
+        <button class="quick-chip" onclick="askQuickQuestion('What are the core requirements of FERC Order 881 for AAR?')">FERC 881 AAR</button>
+      </div>
+
+      <div class="chat-messages-area" id="chatMessagesArea"></div>
+
+      <div class="chat-input-bar">
+        <input type="text" id="chatUserInput" class="chat-input-field" placeholder="Ask a question or calculator name..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+        <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
